@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高尔夫学院经营测算系统 / Golf Academy Operation Simulator</title>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --panel-bg: #1a1a1a;
+            --gold: #d4af37;
+            --text-main: #f0f0f0;
+            --text-muted: #888888;
+            --border-color: #333333;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.1);
+        }
+        h1 {
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            font-size: 1.5em;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        .section-title {
+            color: var(--gold);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+        .input-group {
+            margin-bottom: 18px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cccccc;
+            font-size: 0.9em;
+            line-height: 1.3;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background-color: #252525;
+            border: 1px solid var(--border-color);
+            color: var(--gold);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1.05em;
+            font-weight: bold;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+        }
+        .result-box {
+            background-color: #252525;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 5px solid var(--gold);
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1em;
+            border-bottom: 1px dashed #333;
+            padding-bottom: 8px;
+            align-items: center;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .en-text {
+            font-size: 0.85em;
+            color: #888;
+        }
+        .result-item.highlight {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 20px;
+            border-top: 1px solid var(--gold);
+            padding-top: 15px;
+        }
+        .result-item.highlight-company {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 1.2em;
+            background-color: #333;
+            padding: 15px 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>▌ 经营测算系统 <br> <span style="font-size: 0.7em; color: #aaa;">Operation Simulator</span></h1>
+    
+    <div class="grid">
+        <div class="input-panel">
+            <h2 class="section-title">核心参数 <br><span class="en-text">Core Settings</span></h2>
+            
+            <div class="input-group">
+                <label>会籍客单价 (元) <br><span class="en-text">Membership Unit Price (RMB)</span></label>
+                <input type="number" id="price" value="15000" step="1000" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>销售无责任底薪 (元) <br><span class="en-text">Base Salary (RMB)</span></label>
+                <input type="number" id="baseSalary" value="5000" step="500" oninput="calculate()">
+            </div>
+
+            <h2 class="section-title" style="margin-top: 30px;">本月成单人数 (张) <br><span class="en-text">Monthly Sales Volume (Headcount)</span></h2>
+            
+            <div class="input-group">
+                <label>A类：公司/老板资源人数 <br><span class="en-text">Class A: Company Leads Count</span></label>
+                <input type="number" id="countA" value="4" step="1" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>B类：自然到访人数 <br><span class="en-text">Class B: Walk-in Count</span></label>
+                <input type="number" id="countB" value="3" step="1" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>C类：纯自拓/转介绍人数 <br><span class="en-text">Class C: Self-Sourced Count</span></label>
+                <input type="number" id="countC" value="3" step="1" oninput="calculate()">
+            </div>
+        </div>
+
+        <div class="output-panel">
+            <h2 class="section-title">实时推演结果 <br><span class="en-text">Real-time Results</span></h2>
+            
+            <div class="result-box">
+                <div class="result-item">
+                    <div class="result-text">
+                        <span>总销售量</span>
+                        <span class="en-text">Total Volume</span>
+                    </div>
+                    <span id="outVolume">0 张</span>
+                </div>
+                <div class="result-item">
+                    <div class="result-text" style="color: var(--gold); font-weight: bold;">
+                        <span>月度总营收</span>
+                        <span class="en-text">Total Monthly Revenue</span>
+                    </div>
+                    <span id="outRevenue" style="color: var(--gold); font-weight: bold;">¥ 0</span>
+                </div>
+                
+                <div style="height: 15px;"></div>
+                
+                <div class="result-item">
+                    <div class="result-text" style="color: #888; font-size: 0.9em;">
+                        <span>- A类资源提成</span>
+                        <span class="en-text">- Class A Commission</span>
+                    </div>
+                    <span id="outCommA" style="color: #888; font-size: 0.9em;">¥ 0</span>
+                </div>
+                <div class="result-item">
+                    <div class="result-text" style="color: #888; font-size: 0.9em;">
+                        <span>- B类资源提成</span>
+                        <span class="en-text">- Class B Commission</span>
+                    </div>
+                    <span id="outCommB" style="color: #888; font-size: 0.9em;">¥ 0</span>
+                </div>
+                <div class="result-item">
+                    <div class="result-text" style="color: #888; font-size: 0.9em;">
+                        <span>- C类资源提成</span>
+                        <span class="en-text">- Class C Commission</span>
+                    </div>
+                    <span id="outCommC" style="color: #888; font-size: 0.9em;">¥ 0</span>
+                </div>
+
+                <div class="result-item highlight">
+                    <div class="result-text">
+                        <span>销售当月总薪水</span>
+                        <span class="en-text" style="color: #d4af37;">Total Sales Salary</span>
+                    </div>
+                    <span id="outTotalSalary">¥ 0</span>
+                </div>
+
+                <div class="result-item highlight-company">
+                    <div class="result-text">
+                        <span>公司月度剩余</span>
+                        <span class="en-text" style="color: #ccc;">Company Remaining</span>
+                    </div>
+                    <span id="outNetProfit">¥ 0</span>
+                </div>
+            </div>
+            
+            <p style="font-size: 0.8em; color: #666; margin-top: 15px; font-style: italic;">
+                * 提成率根据总营收自动判定 / Rates determined by total revenue: <br>
+                ≤5w (3/4/6%), 5-15w (5/6/9%), >15w (7/8/12%)
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculate() {
+        const price = parseFloat(document.getElementById("price").value) || 0;
+        const baseSalary = parseFloat(document.getElementById("baseSalary").value) || 0;
+        
+        const countA = parseFloat(document.getElementById("countA").value) || 0;
+        const countB = parseFloat(document.getElementById("countB").value) || 0;
+        const countC = parseFloat(document.getElementById("countC").value) || 0;
+
+        const totalVolume = countA + countB + countC;
+        const revenue = price * totalVolume;
+
+        // 提成逻辑跳点核对
+        let rateA, rateB, rateC;
+        if (revenue <= 50000) {
+            rateA = 0.03; rateB = 0.04; rateC = 0.06;
+        } else if (revenue <= 150000) {
+            rateA = 0.05; rateB = 0.06; rateC = 0.09;
+        } else {
+            rateA = 0.07; rateB = 0.08; rateC = 0.12;
+        }
+
+        const commA = (price * countA) * rateA;
+        const commB = (price * countB) * rateB;
+        const commC = (price * countC) * rateC;
+        const totalComm = commA + commB + commC;
+        
+        const totalSalary = baseSalary + totalComm;
+        const netProfit = revenue - totalSalary;
+
+        const formatMoney = (num) => "¥ " + num.toLocaleString("zh-CN", {minimumFractionDigits: 0, maximumFractionDigits: 0});
+        
+        document.getElementById("outVolume").innerText = totalVolume + " 张";
+        document.getElementById("outRevenue").innerText = formatMoney(revenue);
+        document.getElementById("outCommA").innerText = formatMoney(commA);
+        document.getElementById("outCommB").innerText = formatMoney(commB);
+        document.getElementById("outCommC").innerText = formatMoney(commC);
+        document.getElementById("outTotalSalary").innerText = formatMoney(totalSalary);
+        document.getElementById("outNetProfit").innerText = formatMoney(netProfit);
+    }
+
+    window.onload = calculate;
+</script>
+
+</body>
+</html>
